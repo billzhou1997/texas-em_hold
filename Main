@@ -1,0 +1,667 @@
+
+#include <iomanip>
+#include <iostream>
+#include <cstdlib>
+#include <cmath>
+#include <algorithm>
+#include <time.h>
+using namespace std;
+class card
+{
+   public: int C,N;
+   card()
+   {
+       C=0;
+       N=0;
+   }
+   void setvalue(int IC, int IN) 
+    {
+		C = IC;
+		N = IN;
+	}
+    void setvalue2(int A)
+    {
+        C=A/13 +1;
+        N=A%13 +1;
+    }
+	void print()
+	{  if(C==1)
+	    cout<<"color is red "  << setw(15)<<"number is "<< N<< endl;
+	   else if(C==2)
+	    cout<<"color is yellow "  << setw(15)<<"number is "<< N<< endl;
+	   else if(C==3)
+	    cout<<"color is blue "  << setw(15)<<"number is "<< N<< endl;
+	   else if(C==4)
+	    cout<<"color is green "  << setw(15)<<"number is "<< N<< endl;
+	}
+  
+};
+
+void shuffle(int a[], int n);
+void five(int a, int b ,int c ,int d, int e, int V[]);
+void seven(int a[], int b[]);
+void valuejudge(int a[],int b[], int c[]);
+void cover(int a[],int b[]);
+void UI(int a[]);
+void UI1();
+void UI2();
+void UI3();
+void MainUI();
+void deckminus(int a[],int b[],int c[],int n);
+int colorjudge( int a[],int n);
+int compare(int a[],int b[]);
+int repeatcheck(int a[],int n);
+double MC_test(int a[],int b[],int c[],int n);
+
+
+int main()
+{
+     MainUI();
+}
+void shuffle(int a[], int n)
+{
+	int index, tmp, i;
+	srand(time(NULL));
+	for(i=0; i<n; i++)
+	{
+		index=rand()%(n-i)+i;	
+		if(index!=i)
+		{
+			tmp=a[i];
+			a[i]=a[index];
+			a[index]=tmp;
+		}
+ 
+	}
+}
+void cover(int a[],int b[]) //a for new, b for old
+{
+    for (int r=0;r<6;r++)
+    {
+        if (a[r]<b[r]) break;
+        else if (a[r]>b[r])
+        {
+            for (int t=0;t<6;t++)
+            b[t]=a[t];
+            break;
+        }
+    }
+    /*for (int q=0;q<6;q++)
+    {
+        cout<<b[q]<<" ";
+    }*/
+}
+int compare(int a[],int b[]) //a for new, b for old
+{
+    for (int r=0;r<6;r++)
+    {
+        if (a[r]<b[r]) 
+        {   return 0;  // 0 for a<b
+            break;
+        }
+        else if (a[r]>b[r])
+        {
+            return 1;  //1 for a>b
+            break;
+        }
+    }
+}
+void seven(int a[], int b[])//a for input ;b for out put(value)
+{   
+    
+    int temp[6]={0};
+    five(a[0],a[1],a[2],a[3],a[4],temp);
+    cover(temp,b);
+    five(a[0],a[1],a[2],a[3],a[5],temp);
+    cover(temp,b);
+    five(a[0],a[1],a[2],a[3],a[6],temp);
+    cover(temp,b);
+    five(a[0],a[1],a[2],a[4],a[5],temp);
+    cover(temp,b);
+    five(a[0],a[1],a[2],a[4],a[6],temp);
+    cover(temp,b);
+    five(a[0],a[1],a[2],a[5],a[6],temp);
+    cover(temp,b);
+    five(a[0],a[1],a[3],a[4],a[5],temp);
+    cover(temp,b);
+    five(a[0],a[1],a[3],a[4],a[6],temp);
+    cover(temp,b);
+    five(a[0],a[1],a[3],a[5],a[6],temp);
+    cover(temp,b);
+    five(a[0],a[1],a[4],a[5],a[6],temp);
+    cover(temp,b);
+    five(a[0],a[2],a[3],a[4],a[5],temp);
+    cover(temp,b);
+    five(a[0],a[2],a[3],a[4],a[6],temp);
+    cover(temp,b);
+    five(a[0],a[2],a[4],a[5],a[6],temp);
+    cover(temp,b);
+    five(a[0],a[3],a[4],a[5],a[6],temp);
+    cover(temp,b);
+    five(a[1],a[2],a[3],a[4],a[5],temp);
+    cover(temp,b);
+    five(a[1],a[2],a[3],a[4],a[6],temp);
+    cover(temp,b);
+    five(a[1],a[2],a[3],a[5],a[6],temp);
+    cover(temp,b);
+    five(a[1],a[2],a[4],a[5],a[6],temp);
+    cover(temp,b);
+    five(a[1],a[3],a[4],a[5],a[6],temp);
+    cover(temp,b);
+    five(a[2],a[3],a[4],a[5],a[6],temp);
+    cover(temp,b);//c75=20
+    /*for(int i=0;i<6;i++)
+    {
+        cout<<b[i]<<" ";
+        
+    }
+    cout<< endl;*/
+   
+}
+
+void five(int a, int b ,int c ,int d, int e,int V[])
+{
+    card five[5];
+    int N[5];
+    int C[5];
+        five[0].setvalue2(a);
+        five[1].setvalue2(b);
+        five[2].setvalue2(c);
+        five[3].setvalue2(d);
+        five[4].setvalue2(e);
+        for (int q=0;q<5;q++)
+        { N[q]=five[q].N;
+          C[q]=five[q].C;
+        }
+      sort(N,N+5);
+      valuejudge(N,C,V);
+     
+}
+int colorjudge( int a[],int n)
+{
+    int x=1;
+    for(int q=0;q<n-1;q++)
+        if (a[q]!=a[q+1]) 
+    {
+        x=0;
+        break;
+    }
+    return x;
+}
+void valuejudge(int a[],int b[], int c[])
+{   c[6]={0};
+    if(a[0]==a[1]-1&&a[1]==a[2]-1&&a[2]==a[3]-1&&a[3]==a[4]-1&&colorjudge(b,5))
+    {
+        c[0]=8;
+        c[1]=a[4];
+    }//tonghuashun
+    else if (a[0]==a[1]&&a[1]==a[2]&&a[2]==a[3])
+    {
+        c[0]=7;
+        c[1]=a[2];
+        c[2]=a[4];
+    }
+     else if (a[1]==a[2]&&a[2]==a[3]&&a[3]==a[4])
+    {
+        c[0]=7;
+        c[1]=a[2];
+        c[2]=a[0];
+    }// sitiao
+    else if(a[0]==a[1]&a[1]==a[2]&&a[3]==a[4])
+    {
+        c[0]=6;
+        c[1]=a[2];
+        c[2]=a[4];
+    }
+    else if(a[0]==a[1]&&a[2]==a[3]&a[3]==a[4])
+    {
+        c[0]=6;
+        c[1]=a[2];
+        c[2]=a[0];
+    }//3+2
+    else if(colorjudge(b,5))
+    {
+        c[0]=5;
+        c[1]=a[4];
+        c[2]=a[3];
+        c[3]=a[2];
+        c[4]=a[1];
+        c[5]=a[0];
+    }//tonghua
+    else if(a[0]==a[1]-1&&a[1]==a[2]-1&&a[2]==a[3]-1&&a[3]==a[4]-1)
+    {
+        c[0]=4;
+        c[1]=a[4];
+        
+    }//shun
+    else if(a[0]==a[1]&&a[1]==a[2]&&a[2]!=a[3]&&a[3]!=a[4])
+    {
+        c[0]=3;
+        c[1]=a[0];
+        c[2]=a[4];
+        c[3]=a[3];
+    }
+    else if(a[0]!=a[1]&&a[1]==a[2]&&a[2]==a[3]&&a[3]!=a[4])
+    {
+        c[0]=3;
+        c[1]=a[1];
+        c[2]=a[4];
+        c[3]=a[0]; 
+    }
+    else if(a[0]!=a[1]&&a[1]!=a[2]&&a[2]==a[3]&&a[3]==a[4])
+    {
+        c[0]=3;
+        c[1]=a[2];
+        c[2]=a[1];
+        c[3]=a[0]; 
+    }//santiao
+    else if(a[0]==a[1]&&a[1]!=a[2]&&a[2]==a[3]&&a[3]!=a[4])
+    {
+        c[0]=2;
+        c[1]=a[2];
+        c[2]=a[0];
+        c[3]=a[4];
+    }
+    else if(a[0]==a[1]&&a[1]!=a[2]&&a[2]!=a[3]&&a[3]==a[4])
+    {
+        c[0]=2;
+        c[1]=a[4];
+        c[2]=a[0];
+        c[3]=a[2];
+    }
+    else if(a[0]!=a[1]&&a[1]==a[2]&&a[2]!=a[3]&&a[3]==a[4])
+    {
+        c[0]=2;
+        c[1]=a[4];
+        c[2]=a[2];
+        c[3]=a[0];
+    }//liangdui
+    else if(a[0]==a[1]&&a[1]!=a[2]&&a[2]!=a[3]&&a[3]!=a[4])
+    {
+        c[0]=1;
+        c[1]=a[0];
+        c[2]=a[4];
+        c[3]=a[3];
+        c[4]=a[2];
+    }
+    else if(a[0]!=a[1]&&a[1]==a[2]&&a[2]!=a[3]&&a[3]!=a[4])
+    {
+        c[0]=1;
+        c[1]=a[1];
+        c[2]=a[4];
+        c[3]=a[3];
+        c[4]=a[0];
+    }
+    else if(a[0]!=a[1]&&a[1]!=a[2]&&a[2]==a[3]&&a[3]!=a[4])
+    {
+        c[0]=1;
+        c[1]=a[2];
+        c[2]=a[4];
+        c[3]=a[1];
+        c[4]=a[0];
+    }
+    else if(a[0]!=a[1]&&a[1]!=a[2]&&a[2]!=a[3]&&a[3]==a[4])
+    {
+        c[0]=1;
+        c[1]=a[3];
+        c[2]=a[2];
+        c[3]=a[1];
+        c[4]=a[0];
+    }//yidui
+    else 
+    {
+       c[0]=0;
+       c[1]=a[4];
+       c[2]=a[3];
+       c[3]=a[2];
+       c[4]=a[1];
+       c[5]=a[0];
+       
+    }//sanpai
+}
+
+double MC_test(int a[],int b[],int c[],int n)//a for my value, b for rest of deck, c for public card input, n for times
+{
+    int seven_cards[7]={0}; //other player's seven cards
+    int cards_value[6]={0}; // other player's value
+    double sum=0;
+    srand(time(NULL));
+    for(int i=0;i<n;i++)
+    {   
+        int g=(rand()%45);
+        int h=(g+rand()%44);
+            
+               seven_cards[0]=b[g];
+               seven_cards[1]=b[h];
+         for ( int q=2;q<7;q++)
+     { 
+       seven_cards[q]=c[q];
+     }
+        
+    seven(seven_cards, cards_value);
+    
+    sum+=compare(a, cards_value);
+    for( int g=0;g<6;g++)
+    {
+        cards_value[g]=0;
+    }
+    }
+    sum/=n;
+    return sum;
+   
+}
+
+void deckminus(int a[],int b[],int c[],int n)// a for whole deck, b for my cards, c for rest of deck, n for number of my cards
+{
+    for(int i=0;i<n;i++)
+    { 
+        for(int j=0;j<52-i;j++)
+        {
+            if(b[i]==a[j])
+            {
+                for ( int k=j;k<51;k++)
+                {
+                    a[k]=a[k+1];
+                }
+                break;
+            }
+        }
+    }
+    for(int l=0;l<52-n;l++)
+    { 
+        c[l]=a[l];
+    }
+}
+
+void UI (int a[])
+{
+     
+      int answer = 1; 
+      int c[7]={1,2,3,4,3,2,1};
+      int n[7]={4,7,1,10,9,5,6};
+      //while(repeatcheck(a,7)==1)
+     // {
+  while (answer != 0) // iterate until told to move on 
+{
+ cout << "\nCurrent parameters:\n";
+ cout << "[1] mycard1 color: " <<c[0]<< "\t";
+ cout << "[2] mycard1 number: "<<n[0]<< endl;
+ cout << "[3] mycard2 color: " <<c[1]<< "\t";
+ cout << "[4] mycard2 number: "<<n[1]<< endl;
+ cout << "[5] pubcard1 color: "<<c[2]<< "\t";
+ cout << "[6] pubcard1 number: "<<n[2]<< endl;
+ cout << "[7] pubcard2 color: "<<c[3]<< "\t";
+ cout << "[8] pubcard2 number: "<<n[3]<< endl;
+ cout << "[9] pubcard3 color: "<<c[4]<< "\t";
+ cout << "[10] pubcard3 number: "<<n[4]<< endl;
+ cout << "[11] pubcard4 color: "<<c[5]<< "\t";
+ cout << "[12] pubcard4 number: "<<n[5]<< endl;
+ cout << "[13] pubcard4 color: "<<c[6]<< "\t";
+ cout << "[14] pubcard4 number: "<<n[6]<< endl;
+          cout << "\nWhat do you want to change? [0 for none] ";
+ cin >> answer;
+ cout << endl;
+
+ switch (answer)
+   {
+   case 0:
+     break;
+   case 1:
+     cout << " enter mycard1 color: ";
+     cin >> c[0];
+     break;
+   case 2:
+     cout << " enter mycard1 number: ";
+     cin >> n[0];
+     break;
+   case 3:
+     cout << " enter mycard2 color: ";
+     cin >> c[1];
+     break;
+   case 4:
+     cout << " entermycard2 number: ";
+     cin >> n[1];
+     break;
+   case 5:
+     cout << " enter pubcard1 color: ";
+     cin >> c[2];
+     break;
+   case 6:
+     cout << " enter pubcard1 number: ";
+     cin >> n[2];
+     break;
+   case 7:
+     cout << " enter pubcard2 color: ";
+     cin >> c[3];
+     break;
+   case 8:
+     cout << " enter pubcard2 number: ";
+     cin >> n[3];
+     break;
+   case 9:
+     cout << " enter pubcard3 color: ";
+     cin >> c[4];
+     break;
+   case 10:
+     cout << " enter pubcard3 number: ";
+     cin >> n[4];
+     break;
+   case 11:
+     cout << " enter pubcard4 color: ";
+     cin >> c[5];
+     break;
+   case 12:
+     cout << " enter pubcard4 number: ";
+     cin >> n[5];
+     break;
+   case 13:
+     cout << " enter pubcard5 color: ";
+     cin >> c[6];
+     break;
+   case 14:
+     cout << " enter pubcard5 number: ";
+     cin >> n[6];
+     break;
+   default:
+     break;
+   }
+   for (int i=0;i<6;i++)
+   {
+       a[i]=13*c[i]+n[i]-14;
+   }
+//}
+}
+}
+void MainUI()
+{
+    int answer=0;
+    cout<<"select mode of our app"<<endl;
+    cout<<"1 for 1v1 winning rate given public&my cards"<< endl;
+    cout<<"2 for double A winning rate approximation"<<endl;
+    cout<<"3 for winning status given hand cards without knowing public card"<<endl;
+    cin>> answer;
+    switch(answer)
+    {
+        case 1:
+        UI1();
+        break;
+        case 2:
+        UI2();
+        break;
+        case 3:
+        UI3();
+        break;
+    }
+}
+void UI1()
+{
+    card cards[52]; //create deck
+      
+      int order[52]; // order of cards
+      int rest[45]; //rest of deck
+      int my_value[6]={0}; //store my value 
+      int player_value[6]={0};// store player's value
+      int my_seven[7]={0};// test for 7 to 5
+      int player_seven[7]={0};
+      for (int k=0;k<52;k++)
+      {
+          order[k]=k;
+      }
+        UI(my_seven);//initializing my&public cards(2+5)
+        deckminus(order,my_seven,rest,7);
+     
+     shuffle(rest,45);
+     
+   cout<< "mark!"<<endl;
+   seven(my_seven,my_value);// return my value
+   
+   int T;
+   double WR;
+   cout <<"select T for loops number"<<endl;
+   cin>> T;
+   WR=MC_test(my_value,rest,my_seven,T);
+   cout<< "my winning rate="<<WR<<endl;
+}
+
+
+void UI2()
+{
+    card cards[52]; //create deck
+      
+      int order[52]; // order of cards
+      int rest[50]; //rest of deck
+      
+      int double_ace[2]={12,25};
+      double sum=0;
+      for (int k=0;k<52;k++)
+      {
+          order[k]=k;
+      }
+        deckminus(order,double_ace,rest,2);
+          int T,N;
+   double WR;
+   cout <<"select T for loops number"<<endl;
+   cin>> T;
+   cout <<" select number of other players"<<endl;
+   cin>> N;
+        for( int j=0;j<T;j++)
+     {
+       int my_value[6]={0}; //store my value 
+       int player_value[6]={0};// store player's value
+       shuffle(rest,50);
+       int my_seven[7]={12,25,rest[45],rest[46],rest[47],rest[48],rest[49]};// test for 7 to 5
+       seven(my_seven,my_value);// return my value
+        int comp=1;//store comparison result
+         
+       for( int i=1;i<=N;i++)
+       {
+          
+           int player_seven[7]={rest[2*i],rest[2*i+1],rest[45],rest[46],rest[47],rest[48],rest[49]};
+           seven(player_seven,player_value);
+           int check=compare(my_value,player_value);
+         
+           if( check==0)
+           {
+               comp=0; //0 for smaller, 1 for greater
+               break;
+           }
+       }
+       sum+=comp;
+     }
+     sum/=T;
+   
+   
+
+   cout<< "my winning rate="<<sum<<endl;
+}
+
+void UI3()
+{   
+    card cards[52]; //create deck
+      
+      int order[52]; // order of card
+      int my_value[6]={0}; //store my value 
+      int player_value[6]={0};// store player's value
+      int my_seven[7]={0};// test for 7 to 5
+      int player_seven[7]={0};
+    int players_cards[18]={0};
+
+    int N=1;//player number
+    int T=10;
+    
+         
+         
+    cout<< " enter player number"<<endl;
+    cin>> N;
+    double sum[N]={0};
+    //test area
+         for (int w=0;w<N;w++)
+         {
+             cout<<sum[w]<<endl;
+         }
+      int rest[52-2*N]; //rest of deck
+    for(int e=0;e<N;e++)
+    {
+        cout<< "enter player"<<e<<"'s first card"<<endl;
+        cin>>players_cards[2*e];
+        cout<< "enter player"<<e<<"'s second card"<<endl;
+        cin>>players_cards[2*e+1];
+    }//initialize player's card
+    int players_cards_new[2*N]={0};
+    for (int k=0;k<(2*N);k++)
+    {
+        players_cards_new[k]=players_cards[k];
+        cout<<players_cards_new[k]<<endl;
+    }
+    deckminus(order,players_cards_new,rest,2*N);
+     cout <<"select T for loops number"<<endl;
+     cin>> T;
+        for( int j=0;j<T;j++)//loop for MC method
+     {
+       
+       
+       shuffle(rest,52-2*N);
+        int comp[N]={0};//store comparison result
+       for(int l=0;l<N;l++)//loop over different player
+      {    int temp_value[6]={0}; //store temp value 
+           int temp_seven[7]={players_cards_new[2*l],players_cards_new[2*l+1],rest[0],rest[1],rest[2],rest[3],rest[4]};// test for 7 to 5
+           seven(temp_seven,temp_value);// return my value
+          comp[l]=1;
+           
+         
+       for( int i=0;i<N;i++)//loop over the comparisons with other players
+       {
+          if(i!=l)
+          {
+             int player_seven[7]={players_cards_new[2*i],players_cards_new[2*i+1],rest[0],rest[1],rest[2],rest[3],rest[4]};//seven of others
+             int player_value[6]={0};// store player's value
+             seven(player_seven,player_value);
+              if( compare(temp_value,player_value)==0)
+           {
+               comp[l]=0; //0 for smaller, 1 for greater
+               break;
+           }
+          }
+       }
+       sum[l]+=comp[l];
+      }
+     }
+     for (int q=0;q<N;q++)
+     {
+         sum[q]/=T;
+         cout <<sum[q]<<endl;
+     }
+     
+    
+}
+int repeatcheck(int a[],int n)
+{
+     for (int i=1;i<n;i++)
+     {
+         for (int j=0;j<i;j++)
+         {
+             if(a[j]==a[i]) return 1;
+         }
+     }
+ return 0;
+}
